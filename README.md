@@ -57,7 +57,7 @@ python main.py --model vgg --data_name cifar10 --train 1 --prune 1 --gl_a 0.001
 ```
 python main.py --model vgg --data_name cifar10 --train 1 --prune 1 --gl_a 0.001 --stop_acc 0.7
 
-python main.py --model vgg  --data_name cifar10 --var_2 0.0001 --gl_a 0.001 --is_restore 1 --restore_path=trained_model/vgg/cifar10/_gl1_0.001_gl2_0.001_/
+python main.py --model vgg --data_name cifar10 --var_2 0.0001 --gl_a 0.001 --is_restore 1 --restore_path=trained_model/vgg/cifar10/_gla_0.001_/
 ```
 
 - 模型（model）可选：```lenet, vgg, resnet```（默认为lenet5，vgg16，resnet18）
