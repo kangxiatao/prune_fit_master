@@ -38,7 +38,7 @@ def parse_args():
     is_restore = 0
 
     init_lr = 0.1
-    epochs = 100
+    epochs = 200
     batch_size = 250
 
     threshold = 0.001
@@ -52,7 +52,7 @@ def parse_args():
     gl_a = 0.000
     var_1 = 0.0
     var_2 = 0.0
-    prop_1 = 0.001
+    prop_1 = 0.000
     prop_2 = 0.000
     prop_a = 0.0
 
