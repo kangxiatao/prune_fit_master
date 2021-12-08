@@ -73,15 +73,18 @@ optimizer = tf.keras.optimizers.SGD(learning_rate=args.init_lr, momentum=0.9)
 
 # --- loss ---
 go_loss = penalty.GoGoGoLoss(model, args)
-# _cost = tf.keras.losses.CategoricalCrossentropy(from_logits=True)
+_cost = tf.keras.losses.CategoricalCrossentropy(from_logits=True)
 # _l1_reg = penalty.L1Loss(model, args)
-# _l2_reg = penalty.L2Loss(model, args)
+_l2_reg = penalty.L2Loss(model, args)
 # _var_reg = penalty.SeparateAngleLoss(model, args)
 # _grouplasso = penalty.GroupLassoLoss(model, args)
 # go_loss = [_cost, _l1_reg, _l2_reg, _var_reg, _grouplasso]
 
 # --- metrics ---
 go_metrics = ['accuracy']
+go_metrics.append(_cost)
+if args.l2_value != 0.0:
+    go_metrics.append(_l2_reg)
 # if args.gl_1 != 0.0 or args.gl_2 != 0.0:
 #     go_metrics.append(_grouplasso)
 # if args.var_1 != 0.0 or args.var_2 != 0.0:
@@ -99,7 +102,7 @@ callbacks = [
                                # log_dir=log_dir,
                                ),
     tf.keras.callbacks.CSVLogger(args.save_dir + 'training.log'),
-    # tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1),
+    tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1),
     # tf.keras.callbacks.ModelCheckpoint(
     #     filepath=args.save_dir+'anoi.h5',
     #     save_best_only=True,  # Only save a model if `val_loss` has improved.
