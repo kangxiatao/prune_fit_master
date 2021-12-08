@@ -110,11 +110,11 @@ callbacks = [
     #     monitor="val_accuracy",
     #     verbose=1,
     # ),
-    mycallback.ModelSaveToH5(
-        filepath=args.save_dir + 'anoi.h5',
-        monitor="val_accuracy",
-        verbose=1,
-    )
+    # mycallback.ModelSaveToH5(
+    #     filepath=args.save_dir + 'anoi.h5',
+    #     monitor="val_accuracy",
+    #     verbose=1,
+    # )
 ]
 if args.stop_acc > 0:
     callbacks.append(
