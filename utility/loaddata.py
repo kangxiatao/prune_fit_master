@@ -9,6 +9,7 @@ loaddata.
 
 #
 import tensorflow as tf
+# import tensorflow_datasets as tfds
 import numpy as np
 import pickle
 import random
@@ -81,7 +82,7 @@ class Cifar():
         train_data = train_data[indices]
         train_labels = train_labels[indices]
 
-        print("======Prepare Finished======")
+        print("======Prepare finished======")
 
         return train_data, train_labels, test_data, test_labels
 
@@ -229,7 +230,7 @@ def ld(args):
         db_train = tf.data.Dataset.from_tensor_slices((train_images, train_labels))
         db_train = db_train.shuffle(int(train_labels.shape[0] / 5)).batch(args.batch_size)
         db_test = tf.data.Dataset.from_tensor_slices((test_images, test_labels))
-        db_test = db_test.batch(args.batch_size * 4)
+        db_test = db_test.batch(args.batch_size)
     elif args.data_name == 'caltech101':
         x = np.load(args.data_dir + '/x%s.npy' % args.image_size,
                     mmap_mode=None, allow_pickle=True, fix_imports=True, encoding='ASCII')
@@ -240,16 +241,31 @@ def ld(args):
         db_train = tf.data.Dataset.from_tensor_slices((train_images, train_labels))
         db_train = db_train.shuffle(int(train_labels.shape[0] / 5)).map(preprocess_caltech).batch(args.batch_size)
         db_test = tf.data.Dataset.from_tensor_slices((test_images, test_labels))
-        db_test = db_test.map(preprocess_caltech_test).batch(args.batch_size * 4)
+        db_test = db_test.map(preprocess_caltech_test).batch(args.batch_size)
     elif args.data_name == 'cifar10' or args.data_name == 'cifar100':
-        raw_data = Cifar(args.data_dir)
-        train_images, train_labels, test_images, test_labels = raw_data.prepare_data()
+        # from local
+        # raw_data = Cifar(args.data_dir)
+        # train_images, train_labels, test_images, test_labels = raw_data.prepare_data()
+
+        # from keras.datasets
+        if args.data_name == 'cifar10':
+            _dataset = tf.keras.datasets.cifar10
+        else:
+            _dataset = tf.keras.datasets.cifar100
+        (train_images, train_labels), (test_images, test_labels) = _dataset.load_data()
+        train_labels = np.eye(args.class_num)[np.squeeze(train_labels)]  # one_hot
+        test_labels = np.eye(args.class_num)[np.squeeze(test_labels)]
+        print('train_images', train_images.shape)
+        print('train_labels', train_labels.shape)
+        print('test_images', test_images.shape)
+        print('test_labels', test_labels.shape)
+
         train_images, test_images = data_normalization(train_images, test_images)
         # train_images, test_images = data_standardscaler(train_images, test_images)
         db_train = tf.data.Dataset.from_tensor_slices((train_images, train_labels))
         db_train = db_train.shuffle(int(train_labels.shape[0] / 5)).map(preprocess).batch(args.batch_size)
         db_test = tf.data.Dataset.from_tensor_slices((test_images, test_labels))
-        db_test = db_test.map(preprocess_test).batch(args.batch_size * 4)
+        db_test = db_test.map(preprocess_test).batch(args.batch_size)
     # train_set_size = train_labels.shape[0]
     # test_set_size = test_labels.shape[0]
 
